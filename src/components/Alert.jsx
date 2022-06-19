@@ -3,7 +3,7 @@ const Alert = ({ alert }) => {
     <div
       className={`${
         alert.error ? 'from-red-400 to-red-600' : 'from-sky-500 to-sky-700'
-      } bg-gradient-to-br text-center p-3 rounded-xl uppercase text-white font-bold text-sm my-10`}
+      } bg-gradient-to-br text-center p-3 rounded-xl uppercase text-white font-bold text-sm`}
     >
       {alert.msg}
     </div>

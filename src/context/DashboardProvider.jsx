@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import clienteAxios from '../config/clienteAxios';
 
 const DashboardContext = createContext();
@@ -11,6 +11,8 @@ const DashboardProvider = ({ children }) => {
   const [alert, setAlert] = useState({});
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [shoping_cart, setShoping_cart] = useState([]);
+  const [isConfirm, setIsConfirm] = useState(true);
 
   useEffect(() => {
     const getData = async () => {
@@ -275,6 +277,122 @@ const DashboardProvider = ({ children }) => {
     }
   };
 
+  const filterProducts = async (filters) => {
+    const { elemets, category, price, priceFrom, priceTo, name, page } =
+      filters;
+    let url = '/products';
+    let first = true;
+
+    if (!elemets && !category && !price && !priceFrom && !priceTo && !name) {
+      return;
+    } else {
+      url += '?';
+    }
+
+    if (elemets) {
+      const start = page === 1 ? 0 : page * 10;
+      if (first) {
+        url += `start=${start}&limit=${elemets}`;
+        first = false;
+      } else {
+        url += `&start=${start}&limit=${elemets}`;
+      }
+    }
+    if (category) {
+      if (first) {
+        url += `category=${category}`;
+        first = false;
+      } else {
+        url += `&category=${category}`;
+      }
+    }
+    if (price) {
+      if (first) {
+        url += `price=${price}`;
+        first = false;
+      } else {
+        url += `&price=${price}`;
+      }
+    }
+    if (priceFrom) {
+      if (first) {
+        url += `priceFrom=${priceFrom}`;
+        first = false;
+      } else {
+        url += `&priceFrom=${priceFrom}`;
+      }
+    }
+
+    if (priceTo) {
+      if (first) {
+        url += `priceTo=${priceTo}`;
+        first = false;
+      } else {
+        url += `&priceTo=${priceTo}`;
+      }
+    }
+
+    if (name) {
+      if (first) {
+        url += `name=${name}`;
+        first = false;
+      } else {
+        url += `&name=${name}`;
+      }
+    }
+
+    const { data } = await clienteAxios(url);
+
+    setProducts(data);
+  };
+
+  const checkoutPayment = async () => {
+    if (!shoping_cart.length) return;
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const { data } = await clienteAxios.post(
+        `/checkout`,
+        { items: shoping_cart },
+        config
+      );
+
+      window.location.href = data.url;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const confirmPayment = async (id) => {
+    if (isConfirm) {
+      const error = new Error('Invalid token');
+      return error;
+    }
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    try {
+      const data = await clienteAxios(`/checkout/${id}`, config);
+
+      setIsConfirm(true);
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const showAlert = (alert) => {
     setAlert(alert);
 
@@ -301,6 +419,12 @@ const DashboardProvider = ({ children }) => {
         editUser,
         search,
         setSearch,
+        filterProducts,
+        shoping_cart,
+        setShoping_cart,
+        checkoutPayment,
+        confirmPayment,
+        isConfirm,
       }}
     >
       {children}

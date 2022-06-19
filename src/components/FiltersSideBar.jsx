@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import useDashboard from '../hooks/useDashboard';
 
 const FiltersSidebar = () => {
-  const [elemets, setElemets] = useState('10');
+  const [elemets, setElemets] = useState('');
   const [category, setCategory] = useState('');
   const [price, setPrice] = useState('');
   const [priceFrom, setPriceFrom] = useState('');
@@ -12,10 +11,21 @@ const FiltersSidebar = () => {
   const [name, setName] = useState('');
 
   const { auth } = useAuth();
-  const { categories } = useDashboard();
+  const { categories, filterProducts } = useDashboard();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const filters = {
+      elemets,
+      category,
+      price,
+      priceFrom,
+      priceTo,
+      name,
+      page: 1,
+    };
+    filterProducts(filters);
   };
   return (
     <aside className="md:w-52 lg:w-64 px-5 py-10">
@@ -36,6 +46,7 @@ const FiltersSidebar = () => {
             value={elemets}
             onChange={(e) => setElemets(e.target.value)}
           >
+            <option value="">All</option>
             <option value="10">10</option>
             <option value="20">20</option>
             <option value="30">50</option>
