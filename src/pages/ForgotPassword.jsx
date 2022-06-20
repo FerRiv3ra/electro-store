@@ -35,7 +35,7 @@ const ForgotPassword = () => {
 
   return (
     <>
-      <h1 className="text-sky-500 font-black text-3xl">
+      <h1 className="text-indigo-500 font-black text-3xl">
         Forgot <span className="text-slate-700">Password</span>
       </h1>
       {msg && <Alert alert={alert} />}
@@ -63,7 +63,7 @@ const ForgotPassword = () => {
         <input
           type="submit"
           value="Recover password"
-          className="bg-sky-500 w-full py-3 text-white font-bold uppercase rounded hover:cursor-pointer hover:bg-sky-600 mb-5 transition-colors"
+          className="bg-indigo-500 w-full py-3 text-white font-bold uppercase rounded hover:cursor-pointer hover:bg-indigo-600 mb-5 transition-colors"
         />
       </form>
       <nav className="lg:flex lg:justify-between">

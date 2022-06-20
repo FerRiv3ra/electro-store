@@ -2,13 +2,15 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Alert from '../components/Alert';
 import clienteAxios from '../config/clienteAxios';
+import useDashboard from '../hooks/useDashboard';
 
 const NewPassword = () => {
-  const [alert, setAlert] = useState({});
   const [validToken, setValidToken] = useState(false);
   const [changedPass, setChangedPass] = useState(false);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  const { showAlert } = useDashboard();
 
   const params = useParams();
   const { token } = params;
@@ -20,7 +22,7 @@ const NewPassword = () => {
 
         setValidToken(true);
       } catch (error) {
-        setAlert({
+        showAlert({
           error: true,
           msg: error.response.data.msg
             ? error.response.data.msg
@@ -36,7 +38,7 @@ const NewPassword = () => {
     e.preventDefault();
 
     if ([password, confirmPassword].includes('')) {
-      setAlert({
+      showAlert({
         msg: 'Password and confirm password are required',
         error: true,
       });
@@ -44,12 +46,12 @@ const NewPassword = () => {
     }
 
     if (password !== confirmPassword) {
-      setAlert({ msg: 'Passwords no match', error: true });
+      showAlert({ msg: 'Passwords no match', error: true });
       return;
     }
 
     if (password < 8) {
-      setAlert({
+      showAlert({
         msg: 'Passwords too short, min 8 charaters',
         error: true,
       });
@@ -62,13 +64,13 @@ const NewPassword = () => {
         { password }
       );
 
-      setAlert({ msg: data.msg });
+      showAlert({ msg: data.msg });
 
       setPassword('');
       setConfirmPassword('');
       setChangedPass(true);
     } catch (error) {
-      setAlert({
+      showAlert({
         msg: error.response.data.msg
           ? error.response.data.msg
           : error.response.data.errors[0].msg,
@@ -81,7 +83,7 @@ const NewPassword = () => {
 
   return (
     <>
-      <h1 className="text-sky-500 font-black text-3xl">
+      <h1 className="text-indigo-500 font-black text-3xl">
         New <span className="text-slate-700">Password</span>
       </h1>
 
@@ -127,7 +129,7 @@ const NewPassword = () => {
           <input
             type="submit"
             value="Save new password"
-            className="bg-sky-500 w-full py-3 text-white font-bold uppercase rounded hover:cursor-pointer hover:bg-sky-600 mb-5 transition-colors"
+            className="bg-indigo-500 w-full py-3 text-white font-bold uppercase rounded hover:cursor-pointer hover:bg-indigo-600 mb-5 transition-colors"
           />
         </form>
       )}

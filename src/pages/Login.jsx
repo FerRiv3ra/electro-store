@@ -85,8 +85,8 @@ const Login = () => {
 
   return (
     <>
-      <h1 className="text-sky-500 font-black text-3xl">
-        Ecommerce <span className="text-slate-700">FerRivera</span>
+      <h1 className="text-indigo-500 font-black text-3xl">
+        Electro<span className="text-slate-700">Store</span>
       </h1>
       {msg && <Alert alert={alert} />}
       <form
@@ -128,7 +128,7 @@ const Login = () => {
         <input
           type="submit"
           value="Login"
-          className="bg-sky-500 w-full py-3 text-white font-bold uppercase rounded hover:cursor-pointer hover:bg-sky-600 mb-5 transition-colors"
+          className="bg-indigo-500 w-full py-3 text-white font-bold uppercase rounded hover:cursor-pointer hover:bg-indigo-600 mb-5 transition-colors"
         />
         <p className="block text-center text-slate-600 mb-3">- O -</p>
         <div id="SignInDiv"></div>

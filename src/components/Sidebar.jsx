@@ -8,14 +8,14 @@ const Sidebar = () => {
       <p className="text-xl font-bold">Hola: {auth.name}</p>
       <Link
         to="add-product"
-        className="bg-sky-500 w-full p-3 text-white uppercase font-bold block mt-5 text-center rounded-lg"
+        className="bg-indigo-500 w-full p-3 text-white uppercase font-bold block mt-5 text-center rounded-lg"
       >
         Add product
       </Link>
 
       <Link
         to="add-category"
-        className="bg-sky-500 w-full p-3 text-white uppercase font-bold block mt-5 text-center rounded-lg"
+        className="bg-indigo-500 w-full p-3 text-white uppercase font-bold block mt-5 text-center rounded-lg"
       >
         Add category
       </Link>

@@ -1,21 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
+import Alert from '../components/Alert';
 import OrderSumary from '../components/OrderSumary';
 import ShopItem from '../components/ShopItem';
 import useDashboard from '../hooks/useDashboard';
 
-const ShopingCart = () => {
-  const { shoping_cart } = useDashboard();
+const ShoppingCart = () => {
+  const { shopping_cart, alert } = useDashboard();
+
+  const { msg } = alert;
 
   return (
     <div className="container mx-auto mt-10">
+      {msg && <Alert alert={alert} />}
       <div className="flex shadow-md my-10">
         <div className="w-3/4 bg-white px-10 py-10">
           <div className="flex justify-between border-b pb-8">
             <h1 className="font-semibold text-2xl">Shopping Cart</h1>
             <h2 className="font-semibold text-2xl">
-              {shoping_cart.length}{' '}
-              {shoping_cart.length === 1 ? 'Item' : 'Items'}
+              {shopping_cart && shopping_cart.length}{' '}
+              {shopping_cart && shopping_cart.length === 1 ? 'Item' : 'Items'}
             </h2>
           </div>
           <div className="flex mt-10 mb-5">
@@ -32,7 +36,7 @@ const ShopingCart = () => {
               Total
             </h3>
           </div>
-          {shoping_cart.map((item) => (
+          {shopping_cart.map((item) => (
             <ShopItem key={item.id} item={item} />
           ))}
 
@@ -56,4 +60,4 @@ const ShopingCart = () => {
   );
 };
 
-export default ShopingCart;
+export default ShoppingCart;

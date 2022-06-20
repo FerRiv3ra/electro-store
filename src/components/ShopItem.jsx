@@ -1,19 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import useDashboard from '../hooks/useDashboard';
 
 const ShopItem = ({ item }) => {
   const { id } = item;
-  const { products, setShoping_cart, shoping_cart } = useDashboard();
+  const { products, setShopping_cart, shopping_cart, handleTotal } =
+    useDashboard();
   const product = products.filter((p) => p.uid === id)[0];
-  const { name, price, brand, img } = product;
+  const { name, price, brand, img, stock } = product;
 
   const [quantity, setQuantity] = useState(item.quantity);
 
   const handleChange = (type) => {
     if (type === 'add') {
       setQuantity(quantity + 1);
-      setShoping_cart(
-        shoping_cart.map((el) => {
+      handleTotal(price);
+      setShopping_cart(
+        shopping_cart.map((el) => {
           if (el.id === id) {
             el.quantity = el.quantity + 1;
             return el;
@@ -24,8 +26,8 @@ const ShopItem = ({ item }) => {
       );
     } else {
       setQuantity(quantity - 1);
-      setShoping_cart(
-        shoping_cart.map((el) => {
+      setShopping_cart(
+        shopping_cart.map((el) => {
           if (el.id === id) {
             el.quantity = el.quantity - 1;
             return el;
@@ -38,7 +40,7 @@ const ShopItem = ({ item }) => {
   };
 
   const handleRemove = () => {
-    setShoping_cart(shoping_cart.filter((el) => el.id !== id));
+    setShopping_cart(shopping_cart.filter((el) => el.id !== id));
   };
 
   return (
@@ -76,7 +78,10 @@ const ShopItem = ({ item }) => {
           value={quantity}
         />
 
-        <button onClick={() => handleChange('add')}>
+        <button
+          onClick={() => handleChange('add')}
+          disabled={stock === quantity}
+        >
           <svg className="fill-current text-gray-600 w-3" viewBox="0 0 448 512">
             <path d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" />
           </svg>

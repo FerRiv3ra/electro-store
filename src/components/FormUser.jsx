@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import useDashboard from '../hooks/useDashboard';
 import Alert from './Alert';
 
-const FormUser = ({ user }) => {
+const FormUser = ({ user, pass = false }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [img, setImg] = useState('');
@@ -13,6 +13,7 @@ const FormUser = ({ user }) => {
 
   const navigate = useNavigate();
   const { id } = useParams();
+  const { pathname } = useLocation();
 
   const { showAlert, alert, addAdminUser, editUser } = useDashboard();
 
@@ -44,6 +45,15 @@ const FormUser = ({ user }) => {
       return;
     }
 
+    if (pass && !password) {
+      showAlert({
+        msg: 'Password and new password are required',
+        error: true,
+      });
+      window.scrollTo(0, 0);
+      return;
+    }
+
     if (password !== confirmPassword) {
       showAlert({
         msg: 'Passwords no match',
@@ -53,7 +63,7 @@ const FormUser = ({ user }) => {
       return;
     }
 
-    if (!id && password.length < 8) {
+    if ((!id || pass) && pass && password.length < 8) {
       showAlert({
         msg: 'Passwords too short, min 8 charaters',
         error: true,
@@ -62,7 +72,7 @@ const FormUser = ({ user }) => {
       return;
     }
 
-    if (!imgName && name === user.name) {
+    if (!pass && !imgName && name === user.name) {
       showAlert({
         msg: 'Nothing to do',
       });
@@ -73,7 +83,7 @@ const FormUser = ({ user }) => {
       setConfirmPassword('');
 
       setTimeout(() => {
-        navigate('/dashboard');
+        navigate(pathname.includes('profile') ? `/store` : '/dashboard');
       }, 3600);
       return;
     }
@@ -82,7 +92,7 @@ const FormUser = ({ user }) => {
     file.append('file', img);
 
     let data;
-    if (!id) {
+    if (!id && !pass) {
       data = await addAdminUser({
         name,
         email,
@@ -120,7 +130,7 @@ const FormUser = ({ user }) => {
     setConfirmPassword('');
 
     setTimeout(() => {
-      navigate('/dashboard');
+      navigate(pathname.includes('profile') ? `/store` : '/dashboard');
     }, 3600);
   };
 
@@ -129,66 +139,70 @@ const FormUser = ({ user }) => {
   return (
     <form className="bg-white p-5 md:w-2/3 rounded-lg" onSubmit={handleSubmit}>
       {msg && <Alert alert={alert} />}
-      <div className="my-5">
-        <label
-          className="text-gray-700 uppercase font-bold text-sm"
-          htmlFor="name"
-        >
-          Name
-        </label>
-        <input
-          id="name"
-          type="text"
-          placeholder="Name"
-          className="w-full mt-1 p-3 border rounded-xl bg-gray-50"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </div>
-      <div className="my-5">
-        <label
-          className="text-gray-700 uppercase font-bold text-sm"
-          htmlFor="email"
-        >
-          Email
-        </label>
-        <input
-          id="email"
-          type="email"
-          placeholder="Email"
-          readOnly={id ? true : false}
-          disabled={id ? true : false}
-          className="w-full mt-1 p-3 border rounded-xl bg-gray-50"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </div>
-      <div className="my-5">
-        <label
-          className="text-gray-700 uppercase font-bold text-sm"
-          htmlFor="image"
-        >
-          Profile picture
-        </label>
-        <input
-          id="image"
-          type="file"
-          className="border w-full p-2 mt-1 placeholder-gray-400 rounded-md"
-          accept="image/png, image/jpeg, image/jpg, image/gif"
-          value={imgName}
-          onChange={(e) => {
-            setImg(e.target.files[0]);
-            setImgName(e.target.value);
-          }}
-        />
-        {user && user.img && (
-          <p className=" text-xs">
-            *There is an image stored, if you want to change it, upload another
-            one
-          </p>
-        )}
-      </div>
-      {!user && (
+      {!pass && (
+        <div>
+          <div className="my-5">
+            <label
+              className="text-gray-700 uppercase font-bold text-sm"
+              htmlFor="name"
+            >
+              Name
+            </label>
+            <input
+              id="name"
+              type="text"
+              placeholder="Name"
+              className="w-full mt-1 p-3 border rounded-xl bg-gray-50"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+          <div className="my-5">
+            <label
+              className="text-gray-700 uppercase font-bold text-sm"
+              htmlFor="email"
+            >
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              placeholder="Email"
+              readOnly={id ? true : false}
+              disabled={id ? true : false}
+              className="w-full mt-1 p-3 border rounded-xl bg-gray-50"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="my-5">
+            <label
+              className="text-gray-700 uppercase font-bold text-sm"
+              htmlFor="image"
+            >
+              Profile picture
+            </label>
+            <input
+              id="image"
+              type="file"
+              className="border w-full p-2 mt-1 placeholder-gray-400 rounded-md"
+              accept="image/png, image/jpeg, image/jpg, image/gif"
+              value={imgName}
+              onChange={(e) => {
+                setImg(e.target.files[0]);
+                setImgName(e.target.value);
+              }}
+            />
+            {user && user.img && (
+              <p className=" text-xs">
+                *There is an image stored, if you want to change it, upload
+                another one
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+      {(!user || pass) && (
         <div>
           <div className="my-5">
             <label
@@ -227,7 +241,7 @@ const FormUser = ({ user }) => {
       <input
         type="submit"
         value={user ? 'Save changes' : 'Add Admin'}
-        className="bg-sky-500 w-full py-3 text-white font-bold uppercase rounded hover:cursor-pointer hover:bg-sky-600 mb-5 transition-colors"
+        className="bg-indigo-500 w-full py-3 text-white font-bold uppercase rounded hover:cursor-pointer hover:bg-indigo-600 mb-5 transition-colors"
       />
     </form>
   );

@@ -20,8 +20,9 @@ import EditUser from './pages/EditUser';
 import EditProduct from './pages/EditProduct';
 import StoreLayout from './layouts/StoreLayout';
 import Store from './pages/Store';
-import ShopingCart from './pages/ShopingCart';
+import ShoppingCart from './pages/ShoppingCart';
 import Success from './pages/Success';
+import Profile from './pages/Profile';
 
 function App() {
   return (
@@ -50,8 +51,10 @@ function App() {
             </Route>
             <Route path="/store" element={<StoreLayout />}>
               <Route index element={<Store />} />
-              <Route path="shoping-cart" element={<ShopingCart />} />
+              <Route path="shopping-cart" element={<ShoppingCart />} />
               <Route path="checkout/success/:id" element={<Success />} />
+              <Route path="product/:id" element={<Product />} />
+              <Route path="profile/:id" element={<Profile />} />
             </Route>
           </Routes>
         </DashboardProvider>

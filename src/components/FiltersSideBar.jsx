@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import useDashboard from '../hooks/useDashboard';
 
@@ -10,11 +11,22 @@ const FiltersSidebar = () => {
   const [priceTo, setPriceTo] = useState('');
   const [name, setName] = useState('');
 
+  const { search } = useLocation();
+  const navigation = useNavigate();
+
+  const page = Number(search.slice(5)) || 1;
+
   const { auth } = useAuth();
-  const { categories, filterProducts } = useDashboard();
+  const { categories, filterProducts, getAllProducts } = useDashboard();
+
+  useEffect(() => {
+    handleSubmit();
+  }, [page]);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
 
     const filters = {
       elemets,
@@ -23,10 +35,23 @@ const FiltersSidebar = () => {
       priceFrom,
       priceTo,
       name,
-      page: 1,
+      page,
     };
     filterProducts(filters);
   };
+
+  const handleClear = () => {
+    setElemets('');
+    setCategory('');
+    setPrice('');
+    setPriceFrom('');
+    setPriceTo('');
+    setName('');
+
+    getAllProducts();
+    navigation({ search: '?pag=1' });
+  };
+
   return (
     <aside className="md:w-52 lg:w-64 px-5 py-10">
       <p className="text-sm font-bold mb-3">
@@ -85,6 +110,7 @@ const FiltersSidebar = () => {
           <input
             type="radio"
             id="price"
+            checked={price === 'asc' ? true : false}
             value="asc"
             onChange={(e) => setPrice(e.target.value)}
             name="price"
@@ -95,6 +121,7 @@ const FiltersSidebar = () => {
           <input
             type="radio"
             id="price"
+            checked={price === 'desc' ? true : false}
             value="desc"
             onChange={(e) => setPrice(e.target.value)}
             name="price"
@@ -136,6 +163,7 @@ const FiltersSidebar = () => {
                 type="radio"
                 id="name-asc"
                 name="name"
+                checked={name === 'asc' ? true : false}
                 value="asc"
                 onChange={(e) => setName(e.target.value)}
                 className="p-3"
@@ -147,6 +175,7 @@ const FiltersSidebar = () => {
                 type="radio"
                 id="name-desc"
                 name="name"
+                checked={name === 'desc' ? true : false}
                 value="desc"
                 onChange={(e) => setName(e.target.value)}
                 className="p-3"
@@ -157,8 +186,14 @@ const FiltersSidebar = () => {
         <input
           type="submit"
           value="Apply"
-          className="bg-sky-500 py-2 mt-5 w-full uppercase font-bold text-white rounded cursor-pointer hover:bg-sky-600 transition-colors"
+          className="bg-indigo-500 py-2 mt-5 w-full uppercase font-bold text-white rounded cursor-pointer hover:bg-indigo-600 transition-colors"
         />
+        <button
+          onClick={handleClear}
+          className="bg-slate-500 py-2 mt-5 w-full uppercase font-bold text-white rounded cursor-pointer hover:bg-slate-600 transition-colors"
+        >
+          Clear filters
+        </button>
       </form>
     </aside>
   );

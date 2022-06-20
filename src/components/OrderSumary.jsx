@@ -1,7 +1,7 @@
 import useDashboard from '../hooks/useDashboard';
 
 const OrderSumary = () => {
-  const { checkoutPayment, shoping_cart } = useDashboard();
+  const { checkoutPayment, shopping_cart, total } = useDashboard();
   return (
     <div id="summary" className="w-1/4 px-8 py-10">
       <h1 className="font-semibold text-2xl border-b pb-3">Order Summary</h1>
@@ -25,13 +25,13 @@ const OrderSumary = () => {
       <div className="border-t mt-8">
         <div className="flex font-semibold justify-between py-6 text-sm uppercase">
           <span>Total cost</span>
-          <span>$</span>
+          <span>${total}</span>
         </div>
         <button
           onClick={checkoutPayment}
-          disabled={!shoping_cart.length}
+          disabled={!shopping_cart.length}
           className={`font-semibold ${
-            !shoping_cart.length
+            !shopping_cart.length
               ? 'bg-gray-500'
               : 'bg-indigo-500 hover:bg-indigo-600'
           } py-3 text-sm text-white uppercase w-full`}

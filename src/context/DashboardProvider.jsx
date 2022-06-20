@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
 import clienteAxios from '../config/clienteAxios';
+import useAuth from '../hooks/useAuth';
 
 const DashboardContext = createContext();
 
@@ -11,8 +11,13 @@ const DashboardProvider = ({ children }) => {
   const [alert, setAlert] = useState({});
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [shoping_cart, setShoping_cart] = useState([]);
+  const [shopping_cart, setShopping_cart] = useState([]);
   const [isConfirm, setIsConfirm] = useState(true);
+  const [total, setTotal] = useState(0);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [pages, setPages] = useState(1);
+
+  const { auth, loading: authLoading } = useAuth();
 
   useEffect(() => {
     const getData = async () => {
@@ -24,6 +29,7 @@ const DashboardProvider = ({ children }) => {
         ]);
 
         setProducts(products.data.products);
+        setTotalProducts(products.data.total);
         setCategories(categories.data.categories);
         setUsers(users.data.users);
       } catch (error) {
@@ -36,6 +42,35 @@ const DashboardProvider = ({ children }) => {
     };
     return () => getData();
   }, []);
+
+  useEffect(() => {
+    if (!authLoading) {
+      setShopping_cart(auth.shopping_cart);
+    }
+  }, [authLoading]);
+
+  useEffect(() => {
+    if (!loading) {
+      handleCart();
+      setTotal(
+        shopping_cart.reduce(
+          (tot, shopping_cart) =>
+            tot + shopping_cart.price * shopping_cart.quantity,
+          0
+        )
+      );
+    }
+  }, [shopping_cart]);
+
+  const getAllProducts = async () => {
+    try {
+      const { data } = await clienteAxios('/products?name=asc');
+      setProducts(data.products);
+      setPages(1);
+    } catch (error) {
+      setProducts([]);
+    }
+  };
 
   const addProduct = async (product) => {
     const { file, imgName, ...productNew } = product;
@@ -243,8 +278,6 @@ const DashboardProvider = ({ children }) => {
         },
       };
 
-      userE.role = 'ADMIN_ROLE';
-
       if (password) {
         userE.password = password;
       }
@@ -290,7 +323,8 @@ const DashboardProvider = ({ children }) => {
     }
 
     if (elemets) {
-      const start = page === 1 ? 0 : page * 10;
+      setPages(Math.ceil(totalProducts / elemets));
+      const start = page === 1 ? 0 : (page - 1) * elemets;
       if (first) {
         url += `start=${start}&limit=${elemets}`;
         first = false;
@@ -343,11 +377,11 @@ const DashboardProvider = ({ children }) => {
 
     const { data } = await clienteAxios(url);
 
-    setProducts(data);
+    setProducts(data.products);
   };
 
   const checkoutPayment = async () => {
-    if (!shoping_cart.length) return;
+    if (!shopping_cart.length) return;
     try {
       const token = localStorage.getItem('token');
       if (!token) return;
@@ -360,13 +394,14 @@ const DashboardProvider = ({ children }) => {
 
       const { data } = await clienteAxios.post(
         `/checkout`,
-        { items: shoping_cart },
+        { items: shopping_cart },
         config
       );
 
       window.location.href = data.url;
     } catch (error) {
-      console.log(error);
+      showAlert({ msg: error.response.data.error, error: true });
+      return;
     }
   };
 
@@ -391,6 +426,47 @@ const DashboardProvider = ({ children }) => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleCart = async () => {
+    const user = auth;
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      user.shopping_cart = shopping_cart;
+
+      const { data } = await clienteAxios.put(
+        `/users/${user.uid}`,
+        user,
+        config
+      );
+
+      setUsers(
+        users.map((user) => {
+          if (user.uid === id) {
+            return data;
+          } else {
+            return user;
+          }
+        })
+      );
+
+      return data;
+    } catch (error) {
+      return error;
+    }
+  };
+
+  const handleTotal = (amount) => {
+    setTotal(total + amount);
   };
 
   const showAlert = (alert) => {
@@ -420,11 +496,17 @@ const DashboardProvider = ({ children }) => {
         search,
         setSearch,
         filterProducts,
-        shoping_cart,
-        setShoping_cart,
+        shopping_cart,
+        setShopping_cart,
         checkoutPayment,
         confirmPayment,
         isConfirm,
+        handleTotal,
+        total,
+        handleCart,
+        totalProducts,
+        getAllProducts,
+        pages,
       }}
     >
       {children}

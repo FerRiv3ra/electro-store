@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import Alert from '../components/Alert';
+import Pagination from '../components/Pagination';
 import StorePreview from '../components/StorePreview';
 import useDashboard from '../hooks/useDashboard';
 
@@ -21,7 +22,12 @@ const Store = () => {
         <h1 className="text-4xl font-black">Products</h1>
         {msg && <Alert alert={alert} />}
       </div>
-      <div className="bg-white mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:grid-cols-3 gap-3">
+      <div
+        className={
+          productArr.length &&
+          'bg-white mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 md:grid-cols-3 gap-3'
+        }
+      >
         {productArr.length ? (
           productArr.map((product) => (
             <StorePreview key={product.uid} product={product} />
@@ -32,6 +38,7 @@ const Store = () => {
           </p>
         )}
       </div>
+      {productArr.length ? <Pagination /> : ''}
     </>
   );
 };

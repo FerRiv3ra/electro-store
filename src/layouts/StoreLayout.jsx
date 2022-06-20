@@ -12,9 +12,10 @@ const StoreLayout = () => {
         <Header />
 
         <div className="md:flex md:min-h-screen">
-          {current !== 'shoping-cart' && current !== 'checkout' && (
-            <FiltersSidebar />
-          )}
+          {current !== 'shopping-cart' &&
+            current !== 'checkout' &&
+            current !== 'product' &&
+            current !== 'profile' && <FiltersSidebar />}
           <main className="p-7 flex-1">
             <Outlet />
           </main>

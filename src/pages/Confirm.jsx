@@ -33,7 +33,7 @@ const Confirm = () => {
 
   return (
     <>
-      <h1 className="text-sky-500 font-black text-3xl">
+      <h1 className="text-indigo-500 font-black text-3xl">
         Confirm <span className="text-slate-700">Account</span>
       </h1>
       <div className="mt-20 md:mt-10 shadow-lg p-5 rounded-xl bg-white">

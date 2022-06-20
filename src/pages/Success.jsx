@@ -36,7 +36,7 @@ const Success = () => {
         <div>
           <h2
             className={`block text-center uppercase ${
-              isConfirm ? 'text-sky-500' : 'text-red-500'
+              isConfirm ? 'text-indigo-500' : 'text-red-500'
             } text-lg font-bold`}
           >
             {isConfirm ? 'Success payment completed' : 'Invalid token'}
@@ -44,7 +44,7 @@ const Success = () => {
           <div className="flex justify-center">
             <Link
               to="/store"
-              className="inline-block p-2 mt-3 uppercase text-white bg-sky-500 font-bold rounded-lg"
+              className="inline-block p-2 mt-3 uppercase text-white bg-indigo-500 font-bold rounded-lg"
             >
               Go to store
             </Link>

@@ -6,7 +6,7 @@ const Header = () => {
   const { auth } = useAuth();
 
   const navigate = useNavigate();
-  const { search, setSearch, shoping_cart } = useDashboard();
+  const { search, setSearch, shopping_cart } = useDashboard();
 
   const handleClick = () => {
     const email = localStorage.getItem('email');
@@ -17,7 +17,6 @@ const Header = () => {
 
         google.accounts.id.revoke(localStorage.getItem('email'), (done) => {
           localStorage.removeItem('email');
-          location.reload();
         });
         localStorage.removeItem('token');
       }
@@ -30,8 +29,8 @@ const Header = () => {
   return (
     <header className="px-4 py-5 bg-white border-b">
       <div className="md:flex md:justify-between">
-        <h2 className="text-2xl text-sky-500 font-black text-center">
-          Ecommerce <span className="text-slate-500">FerRivera</span>
+        <h2 className="text-2xl text-indigo-500 font-black text-center">
+          Electro<span className="text-slate-500">Store</span>
         </h2>
         <input
           type="search"
@@ -43,11 +42,11 @@ const Header = () => {
         <div className="flex items-center gap-4">
           {auth.role !== 'ADMIN_ROLE' && (
             <div>
-              <Link to="shoping-cart">
-                {shoping_cart.length ? (
+              <Link to="shopping-cart">
+                {shopping_cart && shopping_cart.length ? (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-sky-500"
+                    className="h-6 w-6 text-indigo-500"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
@@ -73,13 +72,17 @@ const Header = () => {
             </div>
           )}
           <Link
-            to={auth.role === 'ADMIN_ROLE' ? '/dashboard' : 'profile'}
+            to={
+              auth.role === 'ADMIN_ROLE'
+                ? '/dashboard'
+                : `/store/profile/${auth.uid}`
+            }
             className="font-bold uppercase"
           >
             {auth.role === 'ADMIN_ROLE' ? 'Dashboard' : 'Profile'}
           </Link>
           <button
-            className="text-white text-sm bg-sky-500 p-3 rounded-md uppercase font-bold"
+            className="text-white text-sm bg-indigo-500 p-3 rounded-md uppercase font-bold"
             onClick={handleClick}
           >
             {auth.uid ? 'Logout' : 'Login'}

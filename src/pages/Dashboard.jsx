@@ -24,7 +24,7 @@ const Dashboard = () => {
           </svg>
           <Link
             to="users"
-            className="p-3 bg-sky-500 rounded-xl uppercase text-white text-sm m-3 block text-center font-bold"
+            className="p-3 bg-indigo-500 rounded-xl uppercase text-white text-sm m-3 block text-center font-bold"
           >
             Users
           </Link>
@@ -46,7 +46,7 @@ const Dashboard = () => {
           </svg>
           <Link
             to="products"
-            className="p-3 bg-sky-500 rounded-xl uppercase text-white text-sm m-3 block text-center font-bold"
+            className="p-3 bg-indigo-500 rounded-xl uppercase text-white text-sm m-3 block text-center font-bold"
           >
             Products
           </Link>

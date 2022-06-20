@@ -70,7 +70,7 @@ const FormCategory = () => {
       <input
         type="submit"
         value="Add Category"
-        className="bg-sky-500 py-2 mt-5 w-full uppercase font-bold text-white rounded cursor-pointer hover:bg-sky-600 transition-colors"
+        className="bg-indigo-500 py-2 mt-5 w-full uppercase font-bold text-white rounded cursor-pointer hover:bg-indigo-600 transition-colors"
       />
     </form>
   );
