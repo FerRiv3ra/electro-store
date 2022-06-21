@@ -14,11 +14,9 @@ const Success = () => {
     const confirm = async () => {
       const data = await confirmPayment(id);
 
-      if (data.error) return;
+      if (data.response) return;
 
-      if (data.msg) {
-        setIsConfirm(true);
-      }
+      setIsConfirm(true);
     };
 
     setIsloading(false);

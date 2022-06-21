@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import FormUser from '../components/FormUser';
 import useAuth from '../hooks/useAuth';
-import NewPassword from './NewPassword';
 
 const Profile = () => {
   const [user, setUser] = useState({});
@@ -20,10 +19,16 @@ const Profile = () => {
 
   const handleEdit = () => {
     setEdit(!edit);
+    if (newPass) {
+      setNewPass(false);
+    }
   };
 
   const handlePass = () => {
     setNewPass(!newPass);
+    if (edit) {
+      setEdit(false);
+    }
   };
 
   const { img, name, email } = user;

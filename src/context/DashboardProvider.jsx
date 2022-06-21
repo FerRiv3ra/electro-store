@@ -12,7 +12,6 @@ const DashboardProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [shopping_cart, setShopping_cart] = useState([]);
-  const [isConfirm, setIsConfirm] = useState(true);
   const [total, setTotal] = useState(0);
   const [totalProducts, setTotalProducts] = useState(0);
   const [pages, setPages] = useState(1);
@@ -406,7 +405,7 @@ const DashboardProvider = ({ children }) => {
   };
 
   const confirmPayment = async (id) => {
-    if (isConfirm) {
+    if (!loading && !shopping_cart.length) {
       const error = new Error('Invalid token');
       return error;
     }
@@ -421,10 +420,9 @@ const DashboardProvider = ({ children }) => {
     try {
       const data = await clienteAxios(`/checkout/${id}`, config);
 
-      setIsConfirm(true);
       return data;
     } catch (error) {
-      console.log(error);
+      return error;
     }
   };
 
@@ -500,7 +498,6 @@ const DashboardProvider = ({ children }) => {
         setShopping_cart,
         checkoutPayment,
         confirmPayment,
-        isConfirm,
         handleTotal,
         total,
         handleCart,
